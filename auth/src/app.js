@@ -5,4 +5,8 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+// mount auth routes
+const authRouter = require('./routes/auth.routes');
+app.use('/auth', authRouter);
+
 module.exports = app;
