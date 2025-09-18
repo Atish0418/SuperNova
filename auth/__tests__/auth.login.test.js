@@ -64,7 +64,7 @@ describe('POST /api/auth/login', () => {
       .send({ email:"jack@example.com", password:"wrongPass1!" });
 
     expect(res.status).toBe(401);
-    expect((res.body.message).toBe('Invalid credentials'))
+    expect(res.body.message).toBe('Invalid credentials')
   });
 
   it('validates missing fields with 400', async () => {
@@ -73,6 +73,6 @@ describe('POST /api/auth/login', () => {
         .send({});
 
     expect(res.status).toBe(400);
-    expect((res.body.erors)).toBeDefined();
+    expect((res.body.errors)).toBeDefined();
   });
 });
