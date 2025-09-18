@@ -9,6 +9,8 @@ beforeAll(async () => {
 
   process.env.MONGODB_URI = uri;
   process.env.JWT_SECRETE = "test_jwt_secrete";
+  // Ensure tests do not connect to production Redis
+  process.env.USE_REDIS_MOCK = 'true';
 
   await mongoose.connect(uri);
 });
