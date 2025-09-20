@@ -1,7 +1,7 @@
-const userModel = require('../models/user.model');
+    const userModel = require('../models/user.model');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken')
-const redis = require("../db/redis")
+const redis = require("../db/redis");
 
 // user register
 async function registerUser(req, res) {
@@ -134,9 +134,92 @@ async function logoutUser(req, res){
     })
 }
 
+async function getUserAddresses(req, res){
+
+    const id = req.user.id;
+
+    const user = await userModel.findById(id).select('addresses');
+
+    if(!user){
+        return res.status(404).json({
+            message:"User not found!"
+        })
+    }
+
+    return res.status(200).json({
+        message:"User addresses fetched successfully!",
+        addresses:user.addresses
+    })
+
+}
+
+async function addUserAddress(req, res){
+
+    const id = req.user.id;
+
+    const {street, city, state, pincode, country, isDefault} = req.body;
+
+    const user = await userModel.findOneAndUpdate({_id:id},{
+        $push:{
+            addresses:{
+                street,
+                city,
+                state,
+                pincode,
+                country,
+                isDefault
+            }
+        }
+    }, {new:true});
+
+    if(!user){
+        return res.status(404).json({
+            message:"User not found!"
+        })
+    }
+
+    return res.status(201).json({
+            message:"Address added successfully!",
+            address:user.addresses[user.addresses.length-1]
+        })
+}
+
+async function deleteUserAddress(req, res){
+
+    const id = req.user.id;
+
+    const {addressId} = req.params;
+
+    // normalize id to string (jwt may encode ObjectId differently)
+    const userId = String(id);
+
+    // remove the address (if present) and return the updated user
+    const user = await userModel.findByIdAndUpdate(userId, {
+        $pull: {
+            addresses: { _id: addressId }
+        }
+    }, { new: true });
+
+    if(!user){
+        return res.status(404).json({
+            message:"User not found!"
+        });
+    }
+
+    // If user exists, return 200 along with the updated addresses array.
+    // Tests expect deleting a non-existing address to still return 200.
+    res.status(200).json({
+        message: "Address deleted successfully!",
+        addresses: user.addresses
+    });
+}
+
 module.exports = {
     registerUser,
     loginUser,
     getCurrentUser,
-    logoutUser
+    logoutUser,
+    getUserAddresses,
+    addUserAddress,
+    deleteUserAddress
 }

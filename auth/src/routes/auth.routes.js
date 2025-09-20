@@ -6,8 +6,8 @@ const authMiddleWare = require('../middlewares/auth.middleware');
 const router = express.Router();
 
 // POST /api/auth/register
-router.post('/register', 
-    validators.registerUserValidations, 
+router.post('/register',
+    validators.registerUserValidations,
     authController.registerUser
 );
 
@@ -23,8 +23,23 @@ router.get('/me',
     authController.getCurrentUser
 );
 
-router.get('/logout', 
+router.get('/logout',
     authController.logoutUser
 );
 
-module.exports = router ;
+router.get('/users/me/addresses',
+    authMiddleWare.authMiddleWare,
+    authController.getUserAddresses
+);
+
+router.post('/users/me/addresses',
+    validators.addUserAddressValidatoins,
+    authMiddleWare.authMiddleWare,
+    authController.addUserAddress
+)
+
+router.delete('/users/me/addresses/:aderssId',
+    authMiddleWare.authMiddleWare,
+    authController.deleteUserAddress
+)
+module.exports = router;
