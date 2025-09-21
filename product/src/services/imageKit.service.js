@@ -1,7 +1,7 @@
-const ImageKit = require('imageKit');
+const ImageKit = require('imagekit');
 const { v4: uuidv4 } = require('uuid')
 
-const imageKit = new ImageKit({
+const imagekit = new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
     privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
     urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT
@@ -9,9 +9,9 @@ const imageKit = new ImageKit({
 
 
 async function uploadImage({ buffer, filename, folder = '/products'}){
-    const res = await imageKit.upload({
+    const res = await imagekit.upload({
         file:buffer,
-        filename:uuidv4(),
+        fileName:uuidv4(),
         folder
     });
 
@@ -22,4 +22,4 @@ async function uploadImage({ buffer, filename, folder = '/products'}){
     };
 }
 
-module.exports = { imageKit, uploadImage };
+module.exports = { imagekit, uploadImage };

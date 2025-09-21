@@ -7,7 +7,7 @@ const redis = require("../db/redis");
 async function registerUser(req, res) {
 
     try {
-        const { username, email, password, fullName: { firstName, lastName } } = req.body;
+        const { username, email, password, fullName: { firstName, lastName }, role } = req.body;
 
         const isUserAlreadyExists = await userModel.findOne({
             $or: [
@@ -28,7 +28,8 @@ async function registerUser(req, res) {
             username,
             email,
             password: hash,
-            fullName: { firstName, lastName }
+            fullName: { firstName, lastName },
+            role: role || "user"
         })
 
         const token = jwt.sign({

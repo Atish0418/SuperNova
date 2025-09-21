@@ -1,17 +1,11 @@
 const Product = require('../models/product.model');
 const { uploadImage } = require('../services/imageKit.service');
 
+
 async function createProduct(req, res){
     try{
         const { title, description, priceAmount, priceCurrency = 'INR' } = req.body;
-
-        const seller = req.user && req.user.id;
-
-        if(!title || !priceAmount || !seller){
-            return res.status(400).json({
-                message: "title, priceAmount and seller are required!"
-            });
-        }
+        const seller = req.user.id;
 
         const price = {
             amount: Number(priceAmount),
@@ -20,7 +14,10 @@ async function createProduct(req, res){
 
         // Upload files (if any) and collect image metadata
        const images = [];
-       const files = await Promise.all((req.files || []).map(file => uploadImage({buffer:file.buffer})))
+       for(const file of (req.files || [])){
+        const uploaded = await uploadImage({buffer: file.buffer, filename:file.originalname});
+        images.push(uploaded);
+       }
 
         const product = await Product.create({ title, description, price, seller, images });
         return res.status(201).json({
