@@ -7,7 +7,7 @@ jest.mock('../../services/imageKit.service.js', () => ({
   uploadImage: jest.fn(async ({ buffer, filename }) => ({
     url: `https://cdn.example.com/${filename || 'image'}`,
     thumbnail: `https://cdn.example.com/thumb-${filename || 'image'}`,
-    id: `id-${Math.random().toString(36).slice(2,8)}`,
+    id: `id-${Math.random().toString(36).slice(2, 8)}`
   }))
 }));
 
@@ -22,7 +22,7 @@ const { uploadImage } = require('../../services/imageKit.service');
 const Product = require('../../models/product.model');
 const productController = require('../../controllers/product.controller');
 
-function authStub(req, res, next){
+function authStub(req, res, next) {
   req.user = { id: 'seller_1', role: 'seller' };
   next();
 }
@@ -30,7 +30,12 @@ function authStub(req, res, next){
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 app.use(bodyParser.json());
-app.post('/api/products', authStub, upload.array('images', 5), productController.createProduct);
+app.post(
+  '/api/products',
+  authStub,
+  upload.array('images', 5),
+  productController.createProduct
+);
 
 describe('POST /api/products', () => {
   test('creates a product (happy path) with images', async () => {

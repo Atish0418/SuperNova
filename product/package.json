@@ -18,10 +18,12 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
     "multer": "^2.0.2",
+    "test": "^3.3.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "mongodb-memory-server": "^10.2.1",
     "supertest": "^6.3.3"
   }
 }
