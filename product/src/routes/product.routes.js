@@ -17,13 +17,13 @@ router.post('/',
 );
 
 // GET /api/products
-router.get('/',
-    productController.getProducts
-)
+router.get('/', productController.getProducts)
 
 // GET /api/products/:id
 router.get('/:id', productController.getProductById);
 
 router.patch('/:id', createAuthMiddleware([ "seller" ]), productController.updateProduct)
+
+router.delete('/:id', createAuthMiddleware([ "seller" ]), productController.deleteProduct)
 
 module.exports = router;

@@ -133,9 +133,43 @@ async function updateProduct(req, res){
     })
 }
 
+async function deleteProduct(req, res){
+
+    const { id } = req.params;
+
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({
+            message:"Invalid product id"
+        });
+    };
+
+    const product = await productModel.findOne({
+        _id: id,
+    });
+
+    if(!product){
+        return res.status(404).json({
+            message: "Product not found!"
+        });
+    };
+
+    if(product.seller.toString() !== req.user.id){
+        return res.status(403).json({
+            message:"Forbidden: You can only delete your own products"
+        });
+    };
+
+    await productModel.findOneAndDelete({ _id: id });
+    return res.status(200).json({
+        message:"Product deleted"
+    })
+
+}
+
 module.exports = {
     createProduct,
     getProducts,
     getProductById,
-    updateProduct
+    updateProduct,
+    deleteProduct
 };
