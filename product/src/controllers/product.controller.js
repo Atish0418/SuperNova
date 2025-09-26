@@ -1,3 +1,4 @@
+const productModel = require('../models/product.model');
 const Product = require('../models/product.model');
 const { uploadImage } = require('../services/imageKit.service');
 
@@ -65,8 +66,26 @@ async function getProducts(req, res) {
     }
 }
 
+async function getProductById(req, res){
+
+    const { id } = req.params;
+
+    const product = await productModel.findById(id);
+
+    if(!product){
+        return res.status(404).json({
+            message:"Product not found"
+        })
+    }
+
+    res.status(200).json({
+        message:"Product found!",
+        product:product
+    })
+}
 
 module.exports = {
     createProduct,
-    getProducts
+    getProducts,
+    getProductById
 };

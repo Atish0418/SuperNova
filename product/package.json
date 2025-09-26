@@ -19,11 +19,15 @@
     "mongoose": "^8.18.1",
     "multer": "^2.0.2",
     "test": "^3.3.0",
-    "uuid": "^13.0.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "jest": "^29.7.0",
     "mongodb-memory-server": "^10.2.1",
     "supertest": "^6.3.3"
-  }
+  },
+  "jest": {
+  "setupFiles": ["<rootDir>/jest.setup.js"]
+}
+
 }
