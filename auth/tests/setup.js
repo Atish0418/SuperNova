@@ -7,7 +7,7 @@ beforeAll(async () => {
   mongo = await MongoMemoryServer.create();
   const uri = mongo.getUri();
 
-  process.env.MONGODB_URI = uri;
+  process.env.MONGO_URI = uri;
   process.env.JWT_SECRETE = "test_jwt_secrete";
   // Ensure tests do not connect to production Redis
   process.env.USE_REDIS_MOCK = 'true';

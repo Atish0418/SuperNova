@@ -16,7 +16,7 @@ describe('GET /api/products', () => {
   beforeAll(async () => {
     mongo = await MongoMemoryServer.create();
     const uri = mongo.getUri();
-    process.env.MONGODB_URI = uri;
+    process.env.MONGO_URI = uri;
     await mongoose.connect(uri);
     await Product.syncIndexes();
   });

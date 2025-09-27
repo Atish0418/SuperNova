@@ -21,7 +21,7 @@ describe('DELETE /api/products/:id (SELLER)', () => {
     beforeAll(async () => {
         mongo = await MongoMemoryServer.create();
         const uri = mongo.getUri();
-        process.env.MONGODB_URI = uri;
+        process.env.MONGO_URI = uri;
         process.env.JWT_SECRET = process.env.JWT_SECRET || 'testsecret';
         await mongoose.connect(uri);
         await Product.syncIndexes();
