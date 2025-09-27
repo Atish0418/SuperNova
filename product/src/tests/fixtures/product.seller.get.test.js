@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
 jest.mock('../../services/imageKit.service.js', () => ({
-    uploadImage: jest.fn(async () => ({url: 'https://ik.mock/x', thumbnail: 'https://ik.mock/t', id: 'file_x'})),
+    uploadImage: jest.fn(async () => ({ url: 'https://ik.mock/x', thumbnail: 'https://ik.mock/t', id: 'file_x' })),
 }));
 
 const app = require('../../app');
@@ -83,10 +83,25 @@ describe('GET /api/products/seller (SELLER)', () => {
 
     it('supports pagination with skip and limit', async () => {
         await Promise.all([
-
+            createProduct({ title: 'Product 1', seller: sellerId1 }),
+            createProduct({ title: 'Product 2', seller: sellerId1 }),
+            createProduct({ title: 'Product 3', seller: sellerId1 }),
+            createProduct({ title: 'Product 4', seller: sellerId1 }),
         ]);
         const token = signToken(sellerId1.toHexString(), 'seller');
 
-        let res
+        let res = await request(app)
+            .get('/api/products/seller')
+            .set('Authorization', `Bearer ${token}`)
+            .query({ limit: '2' });
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBe(2);
+
+        res = await request(app)
+            .get('/api/products/seller')
+            .set('Authorization', `Bearer ${token}`)
+            .query({ skip: '2', limit: '2' })
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBe(2);
     });
 });
