@@ -11,7 +11,7 @@ describe('Cart API', () => {
         store.reset();
     })
 
-    describe('GET /cart', () => {
+    describe('GET /api/cart', () => {
         it('returns empty cart initially', async () => {
             const res = await request(app).get('/cart');
             expect(res.status).toBe(200);
@@ -19,19 +19,16 @@ describe('Cart API', () => {
         });
     });
 
-    describe('POST /cart/items', () => {
+    describe('POST/api/cart/items', () => {
         it('adds first item to cart', async () => {
-            // TODO: mock product service to return available stock and price
-            // TODO: ensure cart is initially empty or in known state
 
-            const payload = { productId: 'prod-1', qty: 2 };
-            const res = await request(app).post('/cart/items').send(payload).expect(201);
-
-            expect(res.body).toHaveProperty('items');
-            expect(res.body.items.find(i => i.productId === payload.productId)).toBeTruthy();
-            expect(res.body).toHaveProperty('totals');
-
-            // TODO: verify stock reservation was called if your implementation does soft reserving
+            const res = await withAuth(request(app))
+                 .post('api/cart/items')
+                 .send({ productId: 'prod-1', qty: 2 })
+            expect(res.status).toBe(201);
+            expect(res.body.items).toHaveLength(1);
+            expect(res.body.items[ 0 ]).toMatchObject({ product })
+            expect(res.body.subTotal).toBeGreaterThanOrEqual(0);
         });
 
         it('validates missing productId', async () => {
@@ -39,7 +36,7 @@ describe('Cart API', () => {
                  .post('/cart/items')
                  .send({ qty: 1 });
             expect(res.status).toBe(400);
-            expect(res.body).toHaveProperty('/producId/i');
+            expect(res.body.error).toMatch(/producId/i);
         });
 
         it('validates missing qty', async () =>{
@@ -51,7 +48,7 @@ describe('Cart API', () => {
         });
     });
 
-    describe('PATCH /cart/items/:productId', () => {
+    describe('PATCH/api/cart/items/:productId', () => {
         it('updates quantity and returns updated totals', async () => {
             // TODO: create existing cart state with product in it
             // TODO: mock product service availability/pricing
@@ -80,7 +77,7 @@ describe('Cart API', () => {
         });
     });
 
-    describe('DELETE /cart/items/:productId', () => {
+    describe('DELETE/api/cart/items/:productId', () => {
         it('removes the product line and returns updated totals', async () => {
             const productId = 'prod-1';
 
@@ -95,7 +92,7 @@ describe('Cart API', () => {
         });
     });
 
-    describe('DELETE /cart', () => {
+    describe('DELETE/api/cart', () => {
         it('clears the cart and returns empty items and zero totals', async () => {
             // TODO: create a cart with items first
 
@@ -110,7 +107,7 @@ describe('Cart API', () => {
         });
     });
 
-    describe('Recompute prices on GET /cart', () =>{
+    describe('Recompute prices on GET/api/cart', () =>{
         
     })
 });
