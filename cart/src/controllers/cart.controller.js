@@ -1,32 +1,32 @@
 const cartModel = require('../models/cart.model');
 
-async function addItemToCart(req, res){
+async function addItemToCart(req, res) {
 
     const { productId, qty } = req.body;
 
-    const user = req.user 
+    const user = req.user
 
-    let cart = await cartModel.findOne({ user: user._id});
+    let cart = await cartModel.findOne({ user: user.id });
 
-    if(!cart){
-        cart = new cartModel({ user: user._id, items: [] });
-    } 
-
-    const existingItemIndex = cart.items.findIndex(item => item.productId.toSring() === productId)
-
-    if(existingItemIndex >= 0){
-        cart.items[existingItemIndex].quantity += qty;
+    if (!cart) {
+        cart = new cartModel({ user: user.id, items: [] });
     }
-    else{
-        cart.items.push({ productId, quantity: qty})
+
+    const existingItemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+
+    if (existingItemIndex >= 0) {
+        cart.items[ existingItemIndex ].quantity += qty;
+    } else {
+        cart.items.push({ productId, quantity: qty });
     }
 
     await cart.save();
 
-    req.status(200).json({
-        message:"Item added to cart",
-        cart
+    res.status(200).json({
+        message: 'Item added to cart',
+        cart,
     });
+
 }
 
 module.exports = {
